@@ -59,19 +59,22 @@ emergencyContactPhone.addEventListener('change', (e) => {
   console.log(newForm.emergencyContactPhone);
 })
 
-function getServices() {
-    let services = ''
-    if (document.querySelector('input#autismSupport').isChecked) { services = services + "Autism-Support " }
-    if (document.querySelector('input#tutoring').isChecked) { services = services + "Tutoring " };
-    if (document.querySelector('input#ged').isChecked) { services = services + "GED " }
-    if (document.querySelector('input#advocacy').isChecked) { services = services + "Special-Education-Advocacy " }
-    if (document.querySelector('input#edConsult').isChecked) { services = services + "Educational-consultation " }
-    if (document.querySelector('input#homeSchool').isChecked) { services = services + "Home/Virtual-School-Support " }
-    if (document.querySelector('input#other').isChecked) {services = services + `other-${other-text}`}
-    return services
+async function getServices () {
+  let services = new Promise((res) => { 
+    let request = '' 
+    if (document.querySelector('input#autismSupport').checked) { request = request + "Autism-Support " }
+    if (document.querySelector('input#tutoring').checked) { request = request + "Tutoring " };
+    if (document.querySelector('input#ged').checked) { request = request + "GED " }
+    if (document.querySelector('input#advocacy').checked) { request = request + "Special-Education-Advocacy " }
+    if (document.querySelector('input#edConsult').checked) { request = request + "Educational-consultation " }
+    if (document.querySelector('input#homeSchool').checked) { request = request + "Home/Virtual-School-Support " }
+    if (document.querySelector('input#other').checked) {request = request + `other-${otherText}`}
+    res(request)
+  })
+  return services  
 }
   
-let questions = document.querySelector('input#questions')
+let questions = document.getElementById('questions')
 questions.addEventListener('change', (e) => {
     newForm.questions = e.target.value;
     console.log(newForm.questions)
@@ -80,6 +83,7 @@ questions.addEventListener('change', (e) => {
 document.getElementById('submit').addEventListener("click", async (event) => {
     const services = await getServices()
     newForm.services = services
+    console.log(newForm)
     submitForm(newForm, formName)
 })
 
