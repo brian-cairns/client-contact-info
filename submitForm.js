@@ -103,7 +103,8 @@ async function submitForm(data, form) {
   })
     .then((response) => {
       if (response.status == 200) {
-      showSuccess()
+        showSuccess()
+        createClientRecord(data)
       } else {
         showError(response.body)
       }
@@ -114,10 +115,21 @@ async function submitForm(data, form) {
 
 function showSuccess() {
     document.getElementById('returnMessage').innerHTML = 'Form has been successfully submitted'
-    setTimeout(() => {location.href='/'}, 2500)
+    setTimeout(() => { location.href = '/' }, 2500)
 }
 
 function showError(err) {
     console.error
     document.getElementById('returnMessage').innerHTML = `An error occurred when submitting this form, which was ${err}. Please contact the administrator for help.`
 }
+
+async function createClientRecord(data) {
+  fetch('https://pffm.azurewebsites.net/new_client', {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      "Access-Control-Allow-Origin": "*"
+    },
+    body: JSON.stringify(document)
+  })
+}    
