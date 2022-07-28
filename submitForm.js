@@ -114,6 +114,7 @@ async function submitForm(data, form) {
 
 function showSuccess() {
     document.getElementById('returnMessage').innerHTML = 'Form has been successfully submitted'
+    setTimeout(() => {location.href='/'}, 2500)
 }
 
 function showError(err) {
