@@ -147,23 +147,26 @@ async function postNotices(user) {
     'Complete the <br/><a href="/forms/autism-support-services-service-agreement-form">Service Agreement Form</a>',
     'Complete the <br /><a href="/forms/payment-agreement-form">Payment Agreement Form</a>'
   ]
-  let i = 0
-  do {
+
+  let header = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
+  } 
+
+  for (let i = 0; i < 4; i++) {
     let data = {
       name: user,
       notice: notices[i]
     }
-    console.log(data)
-    fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
-    },
-    body: JSON.stringify(data)
-    })
-      .then(() => i++)
-      .catch(console.error)
-  } while (i < 4)
-  
-} 
+    let params = {
+      method: "POST",
+      headers: header,
+      body: JSON.stringify(data)
+    }
+    await fetchUrl(url, params)
+  }
+}
+
+async function fetchUrl(url, params) {
+  return fetch(url, params)
+}
