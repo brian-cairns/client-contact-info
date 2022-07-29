@@ -137,7 +137,12 @@ async function createClientRecord(data) {
 
 async function postNotices(name) {
   const url = 'https://pffm.azurewebsites.net/notices'
-  const notices = ['intake form', 'liability', 'service', 'payment']
+  const notices = [
+    <p>Complete the <a href="/forms/new-client-intake-form">Client Intake Form</a></p>,
+    <p>Complete the <br/><a href="/forms/release-of-liability-form">Release of Liability Form</a></p>,
+    <p>Complete the <br/><a href="/forms/autism-support-services-service-agreement-form">Service Agreement Form</a></p>,
+    <p>Complete the <br /><a href="/forms/payment-agreement-form">Payment Agreement Form</a></p>
+  ]
   notices.forEach((notice) => {
     let uri = `${url}?name=${name}&notice=${notice}`
     fetch(uri, {method: "POST",
