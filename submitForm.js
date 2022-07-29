@@ -84,9 +84,11 @@ document.getElementById('submit').addEventListener("click", async (event) => {
     const services = await getServices()
     newForm.services = services
     console.log(newForm)
-    submitForm(newForm, formName)
-    createClientRecord(newForm)
-    postNotices(newForm.clientName)
+  submitForm(newForm, formName)
+    .then(() => postNotices(newForm.clientName))
+    .then(() => createClientRecord(newForm))   
+    .catch(console.error)
+  
 })
 
 async function submitForm(data, form) {
@@ -136,7 +138,7 @@ async function createClientRecord(data) {
 }  
 
 async function postNotices(user) {
-	console.log(user)
+  console.log(user)
   console.log(clientName)
   const url = 'https://pffm.azurewebsites.net/notices'
   const notices = [
@@ -145,18 +147,23 @@ async function postNotices(user) {
     'Complete the <br/><a href="/forms/autism-support-services-service-agreement-form">Service Agreement Form</a>',
     'Complete the <br /><a href="/forms/payment-agreement-form">Payment Agreement Form</a>'
   ]
-  notices.forEach((item) => {
-   	let data = {
-    	name: user,
-      notice: item
+  let i = 0
+  do {
+    let data = {
+      name: user,
+      notice: notices[i]
     }
     console.log(data)
-    fetch(url, {method: "POST",
+    fetch(url, {
+    method: "POST",
     headers: {
-    	"Content-Type" : "application/json",
+      "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*"
     },
     body: JSON.stringify(data)
     })
-  })
-}
+      .then(() => i++)
+      .catch(console.error)
+  } while (i < 4)
+  
+} 
