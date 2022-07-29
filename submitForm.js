@@ -85,6 +85,8 @@ document.getElementById('submit').addEventListener("click", async (event) => {
     newForm.services = services
     console.log(newForm)
     submitForm(newForm, formName)
+    createClientRecord(newForm)
+    postNotices(newForm.clientName)
 })
 
 async function submitForm(data, form) {
@@ -104,8 +106,6 @@ async function submitForm(data, form) {
     .then((response) => {
       if (response.status == 200) {
         showSuccess()
-        createClientRecord(data)
-        postNotices(data.clientName)
       } else {
         showError(response.body)
       }
@@ -125,7 +125,7 @@ function showError(err) {
 }
 
 async function createClientRecord(data) {
-  fetch('https://pffm.azurewebsites.net/new_client', {
+  fetch('https://pffm.azurewebsites.net/newClient', {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
@@ -135,7 +135,9 @@ async function createClientRecord(data) {
   })
 }  
 
-async function postNotices(name) {
+async function postNotices(user) {
+	console.log(user)
+  console.log(clientName)
   const url = 'https://pffm.azurewebsites.net/notices'
   const notices = [
     'Complete the <a href="/forms/new-client-intake-form">Client Intake Form</a>',
@@ -143,11 +145,18 @@ async function postNotices(name) {
     'Complete the <br/><a href="/forms/autism-support-services-service-agreement-form">Service Agreement Form</a>',
     'Complete the <br /><a href="/forms/payment-agreement-form">Payment Agreement Form</a>'
   ]
-  notices.forEach((notice) => {
-    let uri = `${url}?name=${name}&notice=${notice}`
-    fetch(uri, {method: "POST",
+  notices.forEach((item) => {
+   	let data = {
+    	name: user,
+      notice: item
+    }
+    console.log(data)
+    fetch(url, {method: "POST",
     headers: {
+    	"Content-Type" : "application/json",
       "Access-Control-Allow-Origin": "*"
-    }})
+    },
+    body: JSON.stringify(data)
+    })
   })
 }
