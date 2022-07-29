@@ -105,6 +105,7 @@ async function submitForm(data, form) {
       if (response.status == 200) {
         showSuccess()
         createClientRecord(data)
+        postNotices(data.clientName)
       } else {
         showError(response.body)
       }
@@ -130,6 +131,18 @@ async function createClientRecord(data) {
       'Content-Type': 'application/json',
       "Access-Control-Allow-Origin": "*"
     },
-    body: JSON.stringify(document)
+    body: JSON.stringify(data)
   })
-}    
+}  
+
+async function postNotices(name) {
+  const url = 'https://pffm.azurewebsites.net/notices'
+  const notices = ['intake form', 'liability', 'service', 'payment']
+  notices.forEach((notice) => {
+    let uri = `${url}?name=${name}&notice=${notice}`
+    fetch(uri, {method: "POST",
+    headers: {
+      "Access-Control-Allow-Origin": "*"
+    }})
+  })
+}
