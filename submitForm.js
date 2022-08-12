@@ -79,6 +79,9 @@ questions.addEventListener('change', (e) => {
     newForm.questions = e.target.value;
     console.log(newForm.questions)
 })
+
+let printForm = document.getElementById('printToPDF')
+printForm.style.display = 'none'
     
 document.getElementById('submit').addEventListener("click", async (event) => {
     const services = await getServices()
@@ -105,21 +108,30 @@ async function submitForm(data, form) {
     },
     body: JSON.stringify(document)
   })
-    .then((response) => {
-      if (response.status == 200) {
-        showSuccess()
-      } else {
-        showError(response.body)
-      }
-    })
+    .then(response => response.json())
+    .then(data => respond(data)) 
     .catch((err) => showError(err))
 }
 
-
-function showSuccess() {
-    document.getElementById('returnMessage').innerHTML = 'Form has been successfully submitted'
-    setTimeout(() => { location.href = '/' }, 2500)
+function respond(data) {
+  let id = data.key
+  if (id) {
+    showSuccess(id) 
+  } else {
+    showError(data.error)
+  }
 }
+
+function showSuccess(id) {
+  document.getElementById('returnMessage').innerHTML = 'Form has been successfully submitted'
+  printForm.style.display = 'inline';
+  printForm.addEventListener('click', (e) => { window.print() })
+  let ref = `phoenix-freedom-foundation-backend.webflow.io/client-portal?${newForm.clientName}`
+  let link = `<a href = ${ref}>contact form</a>`
+  let message = `a new client has submitted ${link}`
+  notify('admin', message, 'general')
+}
+
 
 function showError(err) {
     console.error
@@ -170,3 +182,4 @@ async function postNotices(user) {
 async function fetchUrl(url, params) {
   return fetch(url, params)
 }
+
